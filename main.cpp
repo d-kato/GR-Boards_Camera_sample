@@ -104,7 +104,7 @@ static void Start_Video_Camera(void) {
 
 int main() {
     // Initialize the background to black
-    for (int i = 0; i < sizeof(user_frame_buffer0); i += 2) {
+    for (uint32_t i = 0; i < sizeof(user_frame_buffer0); i += 2) {
         user_frame_buffer0[i + 0] = 0x10;
         user_frame_buffer0[i + 1] = 0x80;
     }
