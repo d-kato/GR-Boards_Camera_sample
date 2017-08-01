@@ -30,7 +30,7 @@ bitmap形式での保存には [OpenCV](https://github.com/d-kato/opencv-lib) �
             "value": "1"
         },
         "audio-camera-shield":{
-            "help": "(for GR-PEACH) 0:use 1:not use",
+            "help": "(for GR-PEACH) 0:not use 1:use",
             "value": "1"
         }
     },
