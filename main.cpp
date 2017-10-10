@@ -4,7 +4,6 @@
 #include "SdUsbConnect.h"
 #include "JPEG_Converter.h"
 #include "dcache-control.h"
-#include "opencv2/opencv.hpp"
 
 #define MOUNT_NAME             "storage"
 
@@ -41,23 +40,8 @@ static uint8_t JpegBuffer[1024 * 63]__attribute((aligned(32)));
 
 DisplayBase Display;
 DigitalIn   button0(USER_BUTTON0);
-DigitalIn   button1(USER_BUTTON1);
 DigitalOut  led1(LED1);
 DigitalOut  led2(LED2);
-
-static void save_image_bmp(void) {
-    // Transform buffer into OpenCV Mat
-    cv::Mat img_yuv(VIDEO_PIXEL_VW, VIDEO_PIXEL_HW, CV_8UC2, user_frame_buffer0);
-
-    // Convert from YUV422 to grayscale
-    cv::Mat img_gray;
-    cv::cvtColor(img_yuv, img_gray, CV_YUV2GRAY_YUY2);
-
-    char file_name[32];
-    sprintf(file_name, "/"MOUNT_NAME"/img_%d.bmp", file_name_index++);
-    cv::imwrite(file_name, img_gray);
-    printf("Saved file %s\r\n", file_name);
-}
 
 static void save_image_jpg(void) {
     size_t jcu_encode_size;
@@ -119,11 +103,6 @@ int main() {
     while (1) {
         storage.wait_connect();
         if (button0 == 0) {
-            led1 = 1;
-            save_image_bmp(); // save as bitmap
-            led1 = 0;
-        }
-        if (button1 == 0) {
             led2 = 1;
             save_image_jpg(); // save as jpeg
             led2 = 0;
