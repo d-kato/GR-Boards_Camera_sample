@@ -49,6 +49,12 @@ static void wait_new_image(void) {
 }
 
 static void Start_Video_Camera(void) {
+    // Initialize the background to black
+    for (uint32_t i = 0; i < sizeof(user_frame_buffer0); i += 2) {
+        user_frame_buffer0[i + 0] = 0x10;
+        user_frame_buffer0[i + 1] = 0x80;
+    }
+
     // Field end signal for recording function in scaler 0
     Display.Graphics_Irq_Handler_Set(DisplayBase::INT_TYPE_S0_VFIELD, 0, IntCallbackFunc_Vfield);
 
@@ -66,8 +72,31 @@ static void Start_Video_Camera(void) {
     EasyAttach_CameraStart(Display, DisplayBase::VIDEO_INPUT_CHANNEL_0);
 }
 
+#if MBED_CONF_APP_LCD
+static void Start_LCD_Display(void) {
+    DisplayBase::rect_t rect;
+
+    rect.vs = 0;
+    rect.vw = VIDEO_PIXEL_VW;
+    rect.hs = 0;
+    rect.hw = VIDEO_PIXEL_HW;
+    Display.Graphics_Read_Setting(
+        DisplayBase::GRAPHICS_LAYER_0,
+        (void *)user_frame_buffer0,
+        FRAME_BUFFER_STRIDE,
+        DisplayBase::GRAPHICS_FORMAT_YCBCR422,
+        DisplayBase::WR_RD_WRSWA_32_16BIT,
+        &rect
+    );
+    Display.Graphics_Start(DisplayBase::GRAPHICS_LAYER_0);
+
+    Thread::wait(50);
+    EasyAttach_LcdBacklight(true);
+}
+#endif
+
 static void save_image_jpg(void) {
-    size_t jcu_encode_size;
+    size_t jcu_encode_size = 0;
     JPEG_Converter::bitmap_buff_info_t bitmap_buff_info;
     JPEG_Converter::encode_options_t   encode_options;
 
@@ -80,32 +109,23 @@ static void save_image_jpg(void) {
     encode_options.p_EncodeCallBackFunc = NULL;
     encode_options.input_swapsetting    = JPEG_Converter::WR_RD_WRSWA_32_16_8BIT;
 
-    jcu_encode_size = 0;
     dcache_invalid(JpegBuffer, sizeof(JpegBuffer));
-    if (Jcu.encode(&bitmap_buff_info, JpegBuffer, &jcu_encode_size, &encode_options) != JPEG_Converter::JPEG_CONV_OK) {
-        jcu_encode_size = 0;
+    if (Jcu.encode(&bitmap_buff_info, JpegBuffer, &jcu_encode_size, &encode_options) == JPEG_Converter::JPEG_CONV_OK) {
+        char file_name[32];
+        sprintf(file_name, "/"MOUNT_NAME"/img_%d.jpg", file_name_index++);
+        FILE * fp = fopen(file_name, "w");
+        fwrite(JpegBuffer, sizeof(char), (int)jcu_encode_size, fp);
+        fclose(fp);
+        printf("Saved file %s\r\n", file_name);
     }
-
-    char file_name[32];
-    sprintf(file_name, "/"MOUNT_NAME"/img_%d.jpg", file_name_index++);
-    FILE * fp = fopen(file_name, "w");
-    fwrite(JpegBuffer, sizeof(char), (int)jcu_encode_size, fp);
-    fclose(fp);
-    printf("Saved file %s\r\n", file_name);
 }
 
 int main() {
-    // Initialize the background to black
-    for (uint32_t i = 0; i < sizeof(user_frame_buffer0); i += 2) {
-        user_frame_buffer0[i + 0] = 0x10;
-        user_frame_buffer0[i + 1] = 0x80;
-    }
-
-    // Camera
     EasyAttach_Init(Display);
     Start_Video_Camera();
-
-    // SD & USB
+#if MBED_CONF_APP_LCD
+    Start_LCD_Display();
+#endif
     SdUsbConnect storage(MOUNT_NAME);
 
     while (1) {
