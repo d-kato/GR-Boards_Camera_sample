@@ -18,7 +18,7 @@ JPEG形式での保存には [JCU](https://developer.mbed.org/teams/Renesas/code
             "value": "1"
         },
         "camera-type":{
-            "help": "Options are CAMERA_CVBS, CAMERA_MT9V111, CAMERA_OV7725",
+            "help": "Please see mbed-gr-libs/README.md",
             "value": "CAMERA_CVBS"
         },
         "lcd":{
@@ -41,6 +41,14 @@ JPEG形式での保存には [JCU](https://developer.mbed.org/teams/Renesas/code
     }
 }
 ```
+
+| camera-type "value"     | 説明                               |
+|:------------------------|:-----------------------------------|
+| CAMERA_CVBS             | GR-PEACH NTSC信号                  |
+| CAMERA_MT9V111          | GR-PEACH MT9V111                   |
+| CAMERA_OV7725           | GR-LYHCEE 付属カメラ               |
+| CAMERA_OV5642           | GR-PEACH OV5642                    |
+
 camera-typeを指定しない場合は以下の設定となります。  
 * GR-PEACH、カメラ：CAMERA_MT9V111  
 * GR-LYCHEE、カメラ：CAMERA_OV7725  
