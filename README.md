@@ -48,7 +48,7 @@ JPEG形式での保存には [JCU](https://developer.mbed.org/teams/Renesas/code
 | CAMERA_MT9V111          | GR-PEACH MT9V111                   |
 | CAMERA_OV7725           | GR-LYHCEE 付属カメラ               |
 | CAMERA_OV5642           | GR-PEACH OV5642                    |
-| CAMERA_WIRELESS_CAMERA  | GR-PEACH Wireless/Cameraシールド (MT9V111) |
+| CAMERA_WIRELESS_CAMERA  | GR-PEACH Wireless/Cameraシールド (OV7725) |
 
 camera-typeを指定しない場合は以下の設定となります。  
 * GR-PEACH、カメラ：CAMERA_MT9V111  
