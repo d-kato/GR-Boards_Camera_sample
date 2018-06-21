@@ -114,8 +114,11 @@ static void save_image_jpg(void) {
         char file_name[32];
         sprintf(file_name, "/"MOUNT_NAME"/img_%d.jpg", file_name_index++);
         FILE * fp = fopen(file_name, "w");
-        fwrite(JpegBuffer, sizeof(char), (int)jcu_encode_size, fp);
-        fclose(fp);
+        if (fp != NULL) {
+            setvbuf(fp, NULL, _IONBF, 0); // unbuffered
+            fwrite(JpegBuffer, sizeof(char), (int)jcu_encode_size, fp);
+            fclose(fp);
+        }
         printf("Saved file %s\r\n", file_name);
     }
 }
