@@ -9,7 +9,8 @@ USBとSDが両方挿入されている場合は、先に検出した方のデバ
 ``USER_BUTTON0``を押すとJPEG形式で保存します。  
 JPEG形式での保存には [JCU](https://developer.mbed.org/teams/Renesas/code/GraphicsFramework/) を使用します。  
 
-カメラの指定を行う場合(GR-PEACHのみ)は``mbed_app.json``に``camera-type``を追加してください。
+カメラとLCDの指定を行う場合は``mbed_app.json``に``camera-type``と``lcd-type``を追加してください。  
+詳細は``mbed-gr-libs/README.md``を参照ください。  
 ```json
 {
     "config": {
@@ -24,6 +25,10 @@ JPEG形式での保存には [JCU](https://developer.mbed.org/teams/Renesas/code
         "lcd":{
             "help": "0:disable 1:enable",
             "value": "0"
+        },
+        "lcd-type":{
+            "help": "Please see mbed-gr-libs/README.md",
+            "value": "GR_PEACH_4_3INCH_SHIELD"
         },
         "usb-host-ch":{
             "help": "(for GR-PEACH) 0:ch0 1:ch1",
@@ -41,19 +46,6 @@ JPEG形式での保存には [JCU](https://developer.mbed.org/teams/Renesas/code
     }
 }
 ```
-
-| camera-type "value"     | 説明                               |
-|:------------------------|:-----------------------------------|
-| CAMERA_CVBS             | GR-PEACH NTSC信号                  |
-| CAMERA_MT9V111          | GR-PEACH MT9V111                   |
-| CAMERA_OV7725           | GR-LYHCEE 付属カメラ               |
-| CAMERA_OV5642           | GR-PEACH OV5642                    |
-| CAMERA_WIRELESS_CAMERA  | GR-PEACH Wireless/Cameraシールド (OV7725) |
-
-camera-typeを指定しない場合は以下の設定となります。  
-* GR-PEACH、カメラ：CAMERA_MT9V111  
-* GR-LYCHEE、カメラ：CAMERA_OV7725  
-
 ***Mbed CLI以外の環境で使用する場合***  
 Mbed以外の環境(CLI or Mbedオンラインコンパイラ 以外の環境)をお使いの場合、``mbed_app.json``の変更は反映されません。  
 ``mbed_config.h``に以下のようにマクロを追加してください。  
