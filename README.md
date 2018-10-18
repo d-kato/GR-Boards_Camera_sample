@@ -7,7 +7,13 @@ GR-LYCHEEの開発環境については、[GR-LYCHEE用オフライン開発環�
 カメラ画像をUSB、または、SDに保存するサンプルです。  
 USBとSDが両方挿入されている場合は、先に検出した方のデバイスに接続します。  
 ``USER_BUTTON0``を押すとJPEG形式で保存します。  
-JPEG形式での保存には [JCU](https://developer.mbed.org/teams/Renesas/code/GraphicsFramework/) を使用します。  
+下記の設定を変更することで、AVI形式の動画ファイルとして保存することもできます。  
+```cpp
+/**** User Selection *********/
+#define SAVA_FILE_TYPE         (0)     /* Select  0(Image(.jpg)) or 1(Movie(.avi)) */
+/*****************************/
+```
+JPEG変換には [JCU](https://developer.mbed.org/teams/Renesas/code/GraphicsFramework/) を使用しています。  
 
 カメラとLCDの指定を行う場合は``mbed_app.json``に``camera-type``と``lcd-type``を追加してください。  
 詳細は``mbed-gr-libs/README.md``を参照ください。  
